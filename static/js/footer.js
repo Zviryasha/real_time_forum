@@ -1,3 +1,5 @@
+export function createFooter() {
+    
 // Create the footer
 var footer = document.createElement('footer');
 footer.className = 'footer';
@@ -24,3 +26,5 @@ for (var i = 0; i < teamMembers.length; i++) {
 
 // Append the footer to the body
 document.body.appendChild(footer);
+
+}

@@ -1,8 +1,10 @@
+
 // main.js
 import { createFooter } from './footer.js';
 
 // Create a WebSocket connection to the server
 var ws = new WebSocket('ws://localhost:8080/ws');
+
 
 // Function to run when the WebSocket connection is opened
 ws.onopen = function(event) {

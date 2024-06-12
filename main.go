@@ -3,63 +3,54 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )
 
-// Initialize the websocket connection
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
 
-// --------------
-// create variable websocket connection
-var clients []*websocket.Conn
-
 func main() {
-	r := http.NewServeMux()
-	r.HandleFunc("/first", First)
-	r.HandleFunc("/second", Second)
-	//create webpoint for connect websocket
-	r.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
-		//uinitialize config websocket
-		conn, _ := upgrader.Upgrade(w, r, nil)
-		clients = append(clients, conn)
-		//loop if client send to server
-		for {
-			//read massage from browser
-			msgType, msg, err := conn.ReadMessage()
-			//if error
-			if err != nil {
-				break
-			}
-			//send massage in your console terminal
-			fmt.Printf("%s send: %s\n", conn.RemoteAddr(), string(msg))
-			//loop if massege found and send again to client for
-			//write in your browser
-			for _, client := range clients {
-				if err = client.WriteMessage(msgType, []byte("HI")); err != nil {
-					return
-				}
-			}
+	r := mux.NewRouter()
 
+	r.HandleFunc("/ws", handleConnections)
+	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, ".js") {
+			w.Header().Set("Content-Type", "application/javascript")
+		} else if strings.HasSuffix(r.URL.Path, ".css") {
+			w.Header().Set("Content-Type", "text/css")
 		}
+		http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
 	})
-	//----
-	//send you html file for open to browser
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "index.html")
-		//w, r is write and delete your html file
-	})
-	fmt.Println("Server started on :8080")
-	http.ListenAndServe(":8000", r)
+
+	http.ListenAndServe(":8080", r)
 }
 
-func First(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "first")
-}
+func handleConnections(w http.ResponseWriter, r *http.Request) {
+	// Upgrade initial GET request to a websocket
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("upgrade error:", err)
+		return
+	}
+	// Make sure we close the connection when the function returns
+	defer ws.Close()
 
-func Second(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "second")
+	// Infinite loop to handle websocket messages
+	for {
+		// Read in a new message
+		_, msg, err := ws.ReadMessage()
+		if err != nil {
+			break
+		}
+		// Write message back to browser
+		err = ws.WriteMessage(websocket.TextMessage, msg)
+		if err != nil {
+			break
+		}
+	}
 }

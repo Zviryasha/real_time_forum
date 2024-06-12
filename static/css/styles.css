@@ -1,0 +1,25 @@
+/* Reset default body margin and padding */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Footer styles */
+.footer {
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    background-color: #333;
+    color: #ffffff;
+    width: 100%;
+    padding: 20px 0;
+}
+.footer a {
+    color: #32c528;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

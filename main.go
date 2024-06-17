@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"real_time_forum/src"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -14,10 +14,25 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+type Handler struct {
+	ds *src.DataSources
+}
+
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+	h.ds.Log.Info("Login")
+}
+
 func main() {
+	ds := src.InitDataSources()
+
+	handler := &Handler{
+		ds: ds,
+	}
 	r := mux.NewRouter()
 
-	r.HandleFunc("/ws", handleConnections)
+	r.HandleFunc("/login", handler.Login)
+	r.HandleFunc("/ws", handler.handleConnections)
+
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, ".js") {
 			w.Header().Set("Content-Type", "application/javascript")
@@ -27,14 +42,16 @@ func main() {
 		http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
 	})
 
+	handler.ds.Log.Info("Server started on :8080")
 	http.ListenAndServe(":8080", r)
 }
 
-func handleConnections(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) handleConnections(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println("upgrade error:", err)
+		h.ds.Log.Error("Error upgrading connection to websocket")
+		h.ds.Log.Error(err.Error())
 		return
 	}
 	// Make sure we close the connection when the function returns

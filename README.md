@@ -9,10 +9,10 @@ Is token not exist :
 
 Token exist :
 
-	  -  **default**  `/home`
-   
-	  -  if pressed **new post**  -> `/new-post`
-   
-	  -  if pressed **post**  -> `/post`
-   
-	  -  if pressed **profile**  -> `/profile`
+-  **default**  `/home`
+  
+- if pressed **new post**  -> `/new-post`
+  
+- if pressed **post**  -> `/post`
+
+- if pressed **profile**  -> `/profile`

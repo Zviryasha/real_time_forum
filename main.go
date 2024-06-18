@@ -1,37 +1,30 @@
 package main
 
 import (
+	"context"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"real_time_forum/src"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-type Handler struct {
-	ds *src.DataSources
-}
-
-func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
-	h.ds.Log.Info("Login")
-}
-
 func main() {
+	var wait time.Duration
+
 	ds := src.InitDataSources()
 
-	handler := &Handler{
-		ds: ds,
+	handler := &src.Handler{
+		DS: ds,
 	}
 	r := mux.NewRouter()
 
-	r.HandleFunc("/login", handler.Login)
-	r.HandleFunc("/ws", handler.handleConnections)
+	r.HandleFunc("/login", handler.Login).Methods("POST")
+	r.HandleFunc("/ws", handler.ServeWs)
 
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasSuffix(r.URL.Path, ".js") {
@@ -42,32 +35,40 @@ func main() {
 		http.FileServer(http.Dir("./static")).ServeHTTP(w, r)
 	})
 
-	handler.ds.Log.Info("Server started on :8080")
-	http.ListenAndServe(":8080", r)
-}
-
-func (h *Handler) handleConnections(w http.ResponseWriter, r *http.Request) {
-	// Upgrade initial GET request to a websocket
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		h.ds.Log.Error("Error upgrading connection to websocket")
-		h.ds.Log.Error(err.Error())
-		return
+	srv := &http.Server{
+		Addr: "0.0.0.0:8080",
+		// Good practice to set timeouts to avoid Slowloris attacks.
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      r, // Pass our instance of gorilla/mux in.
 	}
-	// Make sure we close the connection when the function returns
-	defer ws.Close()
 
-	// Infinite loop to handle websocket messages
-	for {
-		// Read in a new message
-		_, msg, err := ws.ReadMessage()
-		if err != nil {
-			break
+	// Run our server in a goroutine so that it doesn't block.
+	go func() {
+		handler.DS.Log.Info("Server started on :8080")
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
 		}
-		// Write message back to browser
-		err = ws.WriteMessage(websocket.TextMessage, msg)
-		if err != nil {
-			break
-		}
-	}
+	}()
+
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+
+	// Block until we receive our signal.
+	<-c
+
+	// Create a deadline to wait for.
+	ctx, cancel := context.WithTimeout(context.Background(), wait)
+	defer cancel()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	srv.Shutdown(ctx)
+	// Optionally, you could run srv.Shutdown in a goroutine and block on
+	// <-ctx.Done() if your application should wait for other services
+	// to finalize based on context cancellation.
+	log.Println("shutting down")
+	os.Exit(0)
 }

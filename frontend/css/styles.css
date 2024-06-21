@@ -1,0 +1,59 @@
+/* real-time-forum/frontend/css/styles.css */
+
+/* The body selector is used to style the entire HTML document. 
+   The font-family property sets the font of the text to Arial, with a fallback to any sans-serif font if Arial is not available. 
+   The background-color property sets the background color of the body to a light gray color (#f4f4f4). 
+   The margin and padding properties are set to 0, which means there will be no space between the edge of the body and the content within it. */
+   body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* The #app selector styles an element with the id 'app'. 
+   The max-width property is set to 800px, which means the maximum width the element can have is 800px. 
+   The margin property is set to '0 auto', which centers the element horizontally in its container. 
+   The padding property is set to 20px, which creates space around the content within the element. 
+   The background property is set to white (#fff). 
+   The box-shadow property is used to apply a shadow effect to the element. 
+   The values '0 0 10px rgba(0, 0, 0, 0.1)' create a shadow that is offset 0 pixels to the right and down, has a blur radius of 10 pixels, and is a semi-transparent black color (0, 0, 0, 0.1). */
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional styling for forms and links */
+form input, form textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #4cae4c;
+}
+
+a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

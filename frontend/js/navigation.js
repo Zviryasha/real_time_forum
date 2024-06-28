@@ -9,9 +9,19 @@ export function render(page) {
     loadPageContent(page);
 }
 
+function checkCookie(cookieName) {
+    // Split document.cookie at '; ' to get an array of cookies
+    const cookies = document.cookie.split('; ');
+    // Find the specific cookie by name
+    const targetCookie = cookies.find(cookie => cookie.startsWith(cookieName + '='));
+    return targetCookie ? true : false;
+}
+
 function loadPageContent(page) {
     const app = document.getElementById('app');
-    const isLoggedIn = sessionStorage.getItem('loggedIn') === 'true';
+    const isLoggedIn = checkCookie(`session-name`);
+    
+    console.log('esli true to zalogineni:', isLoggedIn);
 
     if (page === 'home') {
         if (isLoggedIn) {
@@ -79,12 +89,24 @@ function loadPageContent(page) {
         `;
         setupPost();
     } else if (page === 'logout') {
-        sessionStorage.removeItem('loggedIn');
+
         fetch('/api/logout')
             .then(() => {
-                render('home');
+                clearCookies(); // Clear cookies
+                render('login'); // Redirect to login page
             });
     } else {
         app.innerHTML = `<p>Page not found.</p>`;
+    }
+}
+
+function clearCookies() {
+    const cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
     }
 }

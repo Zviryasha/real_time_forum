@@ -53,8 +53,8 @@ function loadPageContent(page) {
             <form id="login-form">
                 <input type="email" name="email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Login</button></br></br>
-                <button data-nav="home">Home</button>
+                <button type="submit">Login</button>
+                </br></br><button data-nav="home">Home</button>
             </form>
             
             
@@ -71,8 +71,8 @@ function loadPageContent(page) {
                 <input type="text" name="lastName" placeholder="Last Name" required><br>
                 <input type="email" name="email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Register</button></br></br>
-                <button data-nav="home">Home</button>
+                <button type="submit">Register</button>
+                </br></br><button data-nav="home">Home</button>
             </form>
             
         `;
@@ -88,8 +88,8 @@ function loadPageContent(page) {
                 <input type="text" name="title" placeholder="Title" required><br>
                 <textarea name="content" placeholder="Content" required></textarea><br>
                 <button type="submit">Submit</button>
+                </br></br><button data-nav="home">Home</button>
             </form>
-            <a href="#" data-nav="home">Home</a>
         `;
         setupPost();
     } else if (page === 'logout') {

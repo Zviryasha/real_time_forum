@@ -31,6 +31,7 @@ function loadPageContent(page) {
                         <h1>Welcome to the Real-Time Forum</h1>
                         <p>This is the home page.</p>
                         <a href="#" data-nav="post">Create Post</a> | <a href="#" data-nav="logout">Logout</a>
+                                
                         <div id="posts"></div>
                     `;
                     displayPosts(posts);
@@ -52,9 +53,11 @@ function loadPageContent(page) {
             <form id="login-form">
                 <input type="email" name="email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Login</button>
+                <button type="submit">Login</button></br></br>
+                <button data-nav="home">Home</button>
             </form>
-            <a href="#" data-nav="home">Home</a>
+            
+            
         `;
         setupLogin();
     } else if (page === 'register') {
@@ -68,9 +71,10 @@ function loadPageContent(page) {
                 <input type="text" name="lastName" placeholder="Last Name" required><br>
                 <input type="email" name="email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Register</button>
+                <button type="submit">Register</button></br></br>
+                <button data-nav="home">Home</button>
             </form>
-            <a href="#" data-nav="home">Home</a>
+            
         `;
         setupRegister();
     } else if (page === 'post') {

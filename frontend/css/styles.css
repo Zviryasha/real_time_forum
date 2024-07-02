@@ -16,13 +16,68 @@ body {
 }
 
 /* Additional styling for forms and links */
+
+form  {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    align-items: center;
+}
+
+h1,  p, input  {
+    text-align: center;
+    color: #0d4a0d;
+}
+
+/* CSS */
+.content-box {
+    width: 50%; /* Adjust based on preference */
+    padding: 20px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #e4e6c8; /* Adjust background color as needed */
+}
+
+.content-box h1, .content-box p {
+    text-align: center; /* Center text within the box */
+}
+
+.content-box a {
+    text-decoration: none;
+    color: #007bff; /* Adjust link color as needed */
+}
+
+.content-box a:hover {
+    text-decoration: underline;
+}
+
+.input-container {
+    width: 100%; /* Take the full width of the parent */
+    display: flex; /* Use Flexbox */
+    flex-direction: column; /* Stack input fields vertically */
+    align-items: center; /* Center input fields horizontally */
+}
+
+input {
+    margin: 5px 0; /* Add some space between input fields */
+    /* Keep your existing input styles */
+}
+
 form input, form textarea {
     display: block;
-    width: 100%;
+    width: 200px;
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    
+    align-items: center;
+    text-align: center;
 }
 
 form button {
@@ -50,8 +105,15 @@ a:hover {
 
 
 
+.error-message {
+    color: red;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
 
-
-
-
-
+.error-message i {
+    margin-right: 5px;
+}

@@ -43,27 +43,38 @@ function loadPageContent(page) {
         } else {
             app.innerHTML = `
                 <h1>Welcome to the Real-Time Forum</h1>
-                <p>This is the home page.</p>
-                <a href="#" data-nav="login">Login</a> | <a href="#" data-nav="register">Register</a>
+                <div class="content-box">
+                    <p>This is the home page.</p>
+                    <h1><a href="#" data-nav="login">Login</a> | <a href="#" data-nav="register">Register</a></h1>
+                </div>
             `;
         }
     } else if (page === 'login') {
         app.innerHTML = `
             <h1>Login</h1>
-            <form id="login-form">
-                <input type="email" name="email" placeholder="Email" required><br>
-                <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Login</button>
-                </br></br><button data-nav="home">Home</button>
-            </form>
-            
+            <div class="content-box">
+                <form id="login-form">
+                    <div class="input-container">
+                        <input type="text" name="loginIdentifier" placeholder="Username or Email" required><br>
+                        <input type="password" name="password" placeholder="Password" required><br>
+                        <button type="submit">Login</button>
+                        </br></br><button data-nav="home">Home</button></br></br>
+                        <div id="login-error" class="error-message" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Check your email or password, please try again.</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
             
         `;
         setupLogin();
     } else if (page === 'register') {
         app.innerHTML = `
             <h1>Register</h1>
+            <div class="content-box">
             <form id="register-form">
+            <div class="input-container">
                 <input type="text" name="nickname" placeholder="Nickname" required><br>
                 <input type="number" name="age" placeholder="Age" required><br>
                 <input type="text" name="gender" placeholder="Gender" required><br>
@@ -72,9 +83,14 @@ function loadPageContent(page) {
                 <input type="email" name="email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Password" required><br>
                 <button type="submit">Register</button>
-                </br></br><button data-nav="home">Home</button>
+                </br></br><button data-nav="home">Home</button></br></br>
+                <div id="login-error" class="error-message" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Check your email or password, please try again.</span>
+                </div>
+            </div>
             </form>
-            
+            </div>
         `;
         setupRegister();
     } else if (page === 'post') {
